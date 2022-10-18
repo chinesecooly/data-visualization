@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "default-passive-events": "^2.0.0",
-    "echarts": "^4.9.0",
+    "echarts": "^5.4.0",
+    "element-ui": "^2.4.5",
     "vue": "^2.6.14",
     "vue-drag-resize": "^1.5.4",
+    "vue-echarts": "^6.2.3",
     "vue-router": "^3.5.1",
+    "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
@@ -22,6 +25,7 @@
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "vue-cli-plugin-element": "~1.0.1",
     "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {

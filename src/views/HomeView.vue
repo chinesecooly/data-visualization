@@ -1,90 +1,94 @@
 <template>
-  <div id="app">
-    <VueDragResize
-      :isActive="true"
-      :w="300"
-      :h="300"
-      @resizing="resize"
-      @dragging="resize"
-    >
-      <div
-        id="chart"
-        ref="chart"
-        :style="{ width: width + 'px', height: height + 'px' }"
-      ></div>
-    </VueDragResize>
-  </div>
+  <el-container>
+    <el-main>
+      <el-card id="card1" class="box-card">
+        <draggable>
+          <v-chart
+            :style="{ height: height + '%', width: width + '%' }"
+            :option="option"
+          />
+          <v-chart
+            :style="{ height: height + '%', width: width + '%' }"
+            :option="option"
+          />
+          <v-chart
+            :style="{ height: height + '%', width: width + '%' }"
+            :option="option"
+          />
+          <v-chart
+            :style="{ height: height + '%', width: width + '%' }"
+            :option="option"
+          />
+        </draggable>
+      </el-card>
+      <el-card id="card2" class="box-card"> </el-card>
+      <el-card id="card3" class="box-card"> </el-card>
+      <el-card id="card4" class="box-card"> </el-card>
+    </el-main>
+    <el-aside> </el-aside>
+  </el-container>
 </template>
 
 <script>
-import VueDragResize from "vue-drag-resize";
+import { THEME_KEY } from "vue-echarts";
 export default {
   name: "app",
-
-  components: {
-    VueDragResize,
+  provide: {
+    [THEME_KEY]: "dark",
   },
-
   data() {
     return {
-      width: 300,
-      height: 300,
+      width: 100,
+      height: 250,
       top: 0,
       left: 0,
-      chart: null,
       // 配置可视化图形
       option: {
+        title: {
+          text: "Traffic Sources",
+          left: "center",
+        },
         tooltip: {
           trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)",
         },
         legend: {
-          top: "5%",
-          left: "center",
+          orient: "vertical",
+          left: "left",
+          data: [
+            "Direct",
+            "Email",
+            "Ad Networks",
+            "Video Ads",
+            "Search Engines",
+          ],
         },
         series: [
           {
-            name: "Access From",
+            name: "Traffic Sources",
             type: "pie",
-            radius: ["40%", "70%"],
-            avoidLabelOverlap: false,
-            itemStyle: {
-              borderRadius: 10,
-              borderColor: "#fff",
-              borderWidth: 2,
-            },
-            label: {
-              show: false,
-              position: "center",
-            },
+            radius: "55%",
+            center: ["50%", "60%"],
+            data: [
+              { value: 335, name: "Direct" },
+              { value: 310, name: "Email" },
+              { value: 234, name: "Ad Networks" },
+              { value: 135, name: "Video Ads" },
+              { value: 1548, name: "Search Engines" },
+            ],
             emphasis: {
-              label: {
-                show: true,
-                fontSize: "40",
-                fontWeight: "bold",
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
               },
             },
-            labelLine: {
-              show: false,
-            },
-            data: [
-              { value: 1048, name: "Search Engine" },
-              { value: 735, name: "Direct" },
-              { value: 580, name: "Email" },
-              { value: 484, name: "Union Ads" },
-              { value: 300, name: "Video Ads" },
-            ],
           },
         ],
       },
     };
   },
   methods: {
-    getPage() {
-      // 引用chart并初始化
-      this.chart = this.$echarts.init(this.$refs.chart);
-      // 使用刚指定的配置项和数据显示图表。
-      this.chart.setOption(this.option);
-    },
     resize(newRect) {
       this.width = newRect.width;
       this.height = newRect.height;
@@ -92,17 +96,33 @@ export default {
       this.left = newRect.left;
     },
   },
-  created() {},
-  mounted() {
-    this.getPage();
-    // console.log(this.test.a);
-  },
 };
 </script>
 
 <style scoped>
-/* #chart {
-  border-style: dashed;
-  border-color: red;
-} */
+.box-card {
+  height: 92%;
+  position: fixed;
+  overflow: auto;
+  border-style: dotted;
+  border-color: black;
+  scroll-behavior: inherit;
+}
+#card1 {
+  left: 0.5%;
+  width: 25%;
+}
+#card2 {
+  width: 50%;
+  left: 25.5%;
+}
+#card3 {
+  width: 20%;
+  left: 75%;
+}
+#card4 {
+  width: 5%;
+  left: 94%;
+}
 </style>
+
