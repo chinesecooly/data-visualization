@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-main>
-      <el-card>
+      <el-card id="card1">
         <draggable
           :group="{
             name: 'charts',
@@ -21,27 +21,20 @@
           />
         </draggable>
         <draggable
-          :group="{ name: 'charts', pull: false, put: true, revertClone: true }"
+          :group="{ name: 'charts', pull: true, put: true, revertClone: true }"
           id="group2"
           class="group"
           :list="list2"
         >
-          <vue-drag-resize
+          <resize-chart
             v-for="(chart, index) in list2"
             :key="index"
-            :w="380"
-            :h="250"
-            v-on:resizing="resize"
-            v-on:dragging="resize"
-          >
-            <v-chart
-              :style="{ height: height + 'px', width: width + 'px' }"
-              :option="chart"
-              :autoresize="true"
-            />
-          </vue-drag-resize>
+            :chart="chart"
+            @dragstop="deleteChart(index, $event)"
+          />
         </draggable>
       </el-card>
+      <el-card id="card2"></el-card>
     </el-main>
     <el-aside> </el-aside>
   </el-container>
@@ -49,17 +42,15 @@
 
 <script>
 import { THEME_KEY } from "vue-echarts";
+import ResizeChart from "@/components/ResizeChart.vue";
 export default {
   name: "app",
+  components: { ResizeChart },
   provide: {
     [THEME_KEY]: "dark",
   },
   data() {
     return {
-      width: 380,
-      height: 250,
-      top: 0,
-      left: 0,
       list1: [
         {
           title: {
@@ -904,24 +895,57 @@ export default {
         },
       ],
       list2: [],
-      // 配置可视化图形
     };
   },
+  watch: {
+    ["list2.length"]: function (newVal, oldVal) {
+      const h = this.$createElement;
+      if (newVal > oldVal) {
+        this.$notify({
+          title: "Tips",
+          message: h(
+            "i",
+            { style: "color: teal" },
+            "移入工作区域的图表可以任意拖动和缩放大小"
+          ),
+        });
+      } else {
+        this.$notify({
+          title: "Tips",
+          message: h(
+            "i",
+            { style: "color: teal" },
+            "移出工作区域的图表将被删除"
+          ),
+        });
+      }
+    },
+  },
   methods: {
-    resize(newRect) {
-      this.width = newRect.width;
-      this.height = newRect.height;
-      this.top = newRect.top;
-      this.left = newRect.left;
+    deleteChart(index, chart) {
+      if (chart.left >= window.innerWidth * 0.8 * 0.66) {
+        this.list2.splice(index, 1);
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-.el-card {
+#card1 {
   height: 92%;
   width: 80%;
+  position: fixed;
+  overflow: auto;
+  border-style: dotted;
+  border-color: black;
+  scroll-behavior: inherit;
+}
+
+#card2 {
+  height: 92%;
+  left: 83%;
+  width: 16%;
   position: fixed;
   overflow: auto;
   border-style: dotted;
@@ -944,5 +968,9 @@ export default {
 }
 #group1::-webkit-scrollbar {
   display: none;
+}
+#group3 {
+  border-style: dotted;
+  border-color: red;
 }
 </style>
